@@ -5,7 +5,8 @@
 ####在服务器配置好该程序后
 ####假设 改站点的域名是 proxy.com
 
-####需要代理一个其他网站css文件 链接为(http://test.com/test.css)
+####需要代理一个其他网站css文件 链接为
+http://test.com/test.css
 ####使用的链接为
 http://proxy.com/test.com/test.css
 
