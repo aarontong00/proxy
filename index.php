@@ -4,7 +4,7 @@
  * User: yons
  * Date: 2018/7/30
  * Time: 17:45
- * 静态资源代理程序  用来做静态资源的代理   为了避免 某些  cdn 服务 重定向次数过多， 302 跳转 新增一个 随机参数
+ * 静态资源代理程序  用来做静态资源的代理
  * 服务器  iis
  */
 if ($_SERVER['REQUEST_URI'] == '/') {
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_URI'] == '/') {
     $ch = curl_init($real_url);
     curl_setopt($ch,CURLOPT_ENCODING ,'utf8');
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);  // 从证书中检查SSL加密算法是否存在
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);  // 从证书中检查SSL加密算法是否存在
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_FILE, $fp);
