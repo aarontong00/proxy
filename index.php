@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_URI'] == '/') {
 
     if ($file_name_type !== false) {
         $file_name_type = str_replace('.', '', $file_name_type);
+        $file_name_type = strtolower($file_name_type);
 
         switch ($file_name_type) {
             case 'png':
