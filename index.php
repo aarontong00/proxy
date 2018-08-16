@@ -45,14 +45,24 @@ if ($_SERVER['REQUEST_URI'] == '/') {
 
     $file_name = array_pop($real_urls);
 
+
     $dir_name = __DIR__ . '/' . implode('/', $real_urls);
-    if (stripos(PHP_OS, 'WIN') !== false) {
-        $dir_name = iconv('utf-8', 'gbk', $dir_name);
-        $file_name = iconv('utf-8', 'gbk', $file_name);
+
+    $encode = mb_detect_encoding($dir_name, array('ASCII','UTF-8','GB2312','GBK','BIG5'));
+
+    if (stripos(PHP_OS, 'WIN') !== false && $encode == 'EUC-CN') {
+        $dir_name = iconv($encode, 'UTF-8', $dir_name);
+        $file_name = iconv($encode, 'UTF-8', $file_name);
+    } elseif ($encode == 'UTF-8') {
+        $dir_name = iconv($encode, 'GBK', $dir_name);
+        $file_name = iconv($encode, 'GBK', $file_name);
     }
+
     if (!is_dir($dir_name)) {
         mkdir($dir_name, 0777, true);
     }
+
+    $file_name = trim($file_name);
 
     $fp = fopen($dir_name . '/' . $file_name, 'wb');
 
@@ -64,12 +74,12 @@ if ($_SERVER['REQUEST_URI'] == '/') {
         $real_url .= '/' . rawurlencode($value);
     }
 
-    if (count($urls) == 1) {
+    if (!isset($urls['host'])) {
         $real_url = ltrim($real_url, '/');
     } else {
         $real_url = ltrim($real_url, '/');
 
-        $real_url = $urls['scheme'] . '://' . $urls['host'] . $real_url;
+        $real_url = $urls['scheme'] . '://' . $urls['host'] . '/' . $real_url;
     }
 
 
