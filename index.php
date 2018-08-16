@@ -46,15 +46,34 @@ if ($_SERVER['REQUEST_URI'] == '/') {
     $file_name = array_pop($real_urls);
 
     $dir_name = __DIR__ . '/' . implode('/', $real_urls);
-
+    if (stripos(PHP_OS, 'WIN') !== false) {
+        $dir_name = iconv('utf-8', 'gbk', $dir_name);
+        $file_name = iconv('utf-8', 'gbk', $file_name);
+    }
     if (!is_dir($dir_name)) {
         mkdir($dir_name, 0777, true);
     }
 
     $fp = fopen($dir_name . '/' . $file_name, 'wb');
 
+    $urls = parse_url( $real_url);
 
-    $ch = curl_init(str_replace(' ', '%20', $real_url));
+    $explode_url = explode('/', $urls['path']);
+    $real_url = '';
+    foreach ($explode_url as $value) {
+        $real_url .= '/' . rawurlencode($value);
+    }
+
+    if (count($urls) == 1) {
+        $real_url = ltrim($real_url, '/');
+    } else {
+        $real_url = ltrim($real_url, '/');
+
+        $real_url = $urls['scheme'] . '://' . $urls['host'] . $real_url;
+    }
+
+
+    $ch = curl_init($real_url);
     curl_setopt($ch,CURLOPT_ENCODING ,'utf8');
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);  // 从证书中检查SSL加密算法是否存在
@@ -66,6 +85,7 @@ if ($_SERVER['REQUEST_URI'] == '/') {
     curl_close($ch);
 
     fclose($fp);
+
 
     $file_name_type = strrchr($file_name, '.');
 
